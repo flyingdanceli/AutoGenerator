@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>配置生成页面</title>
+    <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+        }
+        #app {
+            display: flex;
+            height: 100vh;
+        }
+        .container {
+            display: flex;
+            width: 100%;
+            max-width: 1800px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .left-panel {
+            width: 30%;
+            background: #f9f9f9;
+            border-right: 1px solid #ddd;
+        }
+        .right-panel {
+            width: 70%;
+            padding: 20px;
+        }
+        .form-section {
+            margin-bottom: 20px;
+        }
+        .add-btn {
+            margin-top: 10px;
+        }
+        .el-table th, .el-table td {
+            text-align: center;
+        }
+        .left-panel .time{
+            color: #298842FF;
+            padding-left: 10px;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div class="container">
+        <!-- 左侧菜单 -->
+        <div class="left-panel">
+            <el-menu default-active="1" class="el-menu-vertical">
+                <el-menu-item index="1">
+                    com.ruis.digitalinvoicexingtai2024 <span class="time">2024-11-23 17:16:18 </span>
+                </el-menu-item>
+                <el-menu-item index="2">2024-11-23 com.ruis.digitalinvoicexingtai2024</el-menu-item>
+                <el-menu-item index="3">2024-11-23 com.ruis.digitalinvoicexingtai2024</el-menu-item>
+            </el-menu>
+        </div>
+
+        <!-- 右侧内容 -->
+        <div class="right-panel">
+            <el-form :model="form" label-width="120px">
+                <!-- 数据库设置 -->
+                <div class="form-section">
+                    <el-divider>数据库设置</el-divider>
+                    <el-form-item label="数据库 URL">
+                        <el-input v-model="form.db.url" placeholder="请输入数据库 URL"></el-input>
+                    </el-form-item>
+                    <el-row>
+                        <el-col :span="12">
+                            <el-form-item label="用户名">
+                                <el-input v-model="form.db.username" placeholder="请输入数据库用户名"></el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="12">
+                            <el-form-item label="密码">
+                                <el-input v-model="form.db.password" placeholder="请输入数据库密码"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                </div>
+
+                <!-- 包设置 -->
+                <div class="form-section">
+                    <el-divider>包设置</el-divider>
+                    <el-form-item label="包名">
+                        <el-input v-model="form.package.name" placeholder="请输入包名"></el-input>
+                    </el-form-item>
+                    <el-form-item label="模块名称">
+                        <el-input v-model="form.package.module" placeholder="请输入模块名称"></el-input>
+                    </el-form-item>
+                    <el-form-item label="磁盘路径">
+                        <el-input v-model="form.package.path" placeholder="请输入磁盘路径"></el-input>
+                    </el-form-item>
+                </div>
+
+                <!-- 生成设置 -->
+                <div class="form-section">
+                    <el-divider>生成设置</el-divider>
+                    <el-table :data="form.tables" style="width: 100%" border>
+                        <!-- 表名称 -->
+                        <el-table-column prop="tableName"  width="250">
+                            <template #header>
+                                <el-button class="add-btn" type="success" @click="addRow">增加表</el-button>
+                            </template>
+                            <template #default="scope">
+                                <el-input v-model="scope.row.tableName" placeholder="请输入表名称"></el-input>
+                            </template>
+                        </el-table-column>
+
+                        <!-- 多级表头：Controller 层 -->
+                        <el-table-column label="Controller 层"  align="center">
+                            <el-table-column prop="controllerGenerate" label="生成" align="center">
+                                <template #default="scope">
+                                    <el-checkbox v-model="scope.row.controller.generate"></el-checkbox>
+                                </template>
+                            </el-table-column>
+                            <el-table-column prop="controllerOverride" label="覆盖" align="center">
+                                <template #default="scope">
+                                    <el-checkbox v-model="scope.row.controller.override"></el-checkbox>
+                                </template>
+                            </el-table-column>
+                        </el-table-column>
+
+                        <!-- 多级表头：Service 层 -->
+                        <el-table-column label="Service 层" align="center">
+                            <el-table-column prop="serviceGenerate" label="生成" align="center">
+                                <template #default="scope">
+                                    <el-checkbox v-model="scope.row.service.generate"></el-checkbox>
+                                </template>
+                            </el-table-column>
+                            <el-table-column prop="serviceOverride" label="覆盖" align="center">
+                                <template #default="scope">
+                                    <el-checkbox v-model="scope.row.service.override"></el-checkbox>
+                                </template>
+                            </el-table-column>
+                        </el-table-column>
+
+                        <!-- 多级表头：Impl 层 -->
+                        <el-table-column label="Impl 层" align="center">
+                            <el-table-column prop="implGenerate" label="生成" align="center">
+                                <template #default="scope">
+                                    <el-checkbox v-model="scope.row.impl.generate"></el-checkbox>
+                                </template>
+                            </el-table-column>
+                            <el-table-column prop="implOverride" label="覆盖" align="center">
+                                <template #default="scope">
+                                    <el-checkbox v-model="scope.row.impl.override"></el-checkbox>
+                                </template>
+                            </el-table-column>
+                        </el-table-column>
+
+                        <!-- 多级表头：Entity 层 -->
+                        <el-table-column label="Entity 层" align="center">
+                            <el-table-column prop="entityGenerate" label="生成" align="center">
+                                <template #default="scope">
+                                    <el-checkbox v-model="scope.row.entity.generate"></el-checkbox>
+                                </template>
+                            </el-table-column>
+                            <el-table-column prop="entityOverride" label="覆盖" align="center">
+                                <template #default="scope">
+                                    <el-checkbox v-model="scope.row.entity.override"></el-checkbox>
+                                </template>
+                            </el-table-column>
+                        </el-table-column>
+
+                        <!-- 操作 -->
+                        <el-table-column label="操作" width="100" align="center">
+                            <template #default="scope">
+                                <el-button type="danger"  size="mini" @click="removeRow(scope.$index)">删除</el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+
+                </div>
+            </el-form>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/vue@3"></script>
+<script src="https://unpkg.com/element-plus"></script>
+<script>
+    const { createApp } = Vue;
+    const { ElForm, ElInput, ElDivider, ElFormItem, ElCheckbox, ElButton, ElTable, ElTableColumn, ElMenu, ElMenuItem, ElRow, ElCol } = ElementPlus;
+
+    const app = createApp({
+        components: { ElForm, ElInput, ElDivider, ElFormItem, ElCheckbox, ElButton, ElTable, ElTableColumn, ElMenu, ElMenuItem, ElRow, ElCol },
+        data() {
+            return {
+                form: {
+                    db: {
+                        url: '',
+                        username: '',
+                        password: ''
+                    },
+                    package: {
+                        name: '',
+                        module: '',
+                        path: ''
+                    },
+                    tables: []
+                }
+            };
+        },
+        methods: {
+            addRow() {
+                this.form.tables.push({
+                    tableName: '',
+                    controller: { generate: false, override: false },
+                    service: { generate: true, override: false },
+                    impl: { generate: true, override: false },
+                    entity: { generate: true, override: true }
+                });
+            },
+            removeRow(index) {
+                this.form.tables.splice(index, 1);
+            }
+        }
+    });
+
+    app.mount('#app');
+</script>
+</body>
+</html>
