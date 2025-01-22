@@ -5,8 +5,8 @@
     <groupId>com.ruis</groupId>
     <artifactId>AutoGenerator</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>digitalInvoice-xingtai2024</name>
-    <description>digitalInvoice-xingtai2024</description>
+    <name>AutoGenerator</name>
+    <description>AutoGenerator</description>
 
     <properties>
         <java.version>1.8</java.version>
@@ -72,6 +72,13 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.12.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.alibaba.fastjson2</groupId>
+            <artifactId>fastjson2</artifactId>
+            <version>2.0.54</version>
+        </dependency>
+
 
 
     </dependencies>
